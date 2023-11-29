@@ -42,13 +42,13 @@ const MultiSelect = ({ options, numberOfVisibles }) => {
         )}
         {visibleOptions.map((option) => (
           <li
-            key={option}
+            key={option.id}
             className="mb-2 mr-3 shadow-lg border border-blue-500 rounded-md"
           >
             <label className="flex items-center">
               <input
                 type="checkbox"
-                value={option}
+                value={option.name}
                 checked={selectedItems.includes(option)}
                 onChange={() => handleSelectionChange(option)}
                 className="hidden"
@@ -60,7 +60,7 @@ const MultiSelect = ({ options, numberOfVisibles }) => {
                     : "text-gray-700"
                 }`}
               >
-                {option}
+                {option.name}
               </span>
             </label>
           </li>

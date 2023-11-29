@@ -3,8 +3,10 @@ import Link from "next/link";
 import React from "react";
 
 const Navbar = async () => {
-  const { userId } = auth();
+  const { userId, getToken } = auth();
   // const user = await currentUser();
+  // console.log(await getToken());
+  // console.log(userId)
   return (
     <nav className="bg-white border-gray-200 dark:bg-gray-900">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">

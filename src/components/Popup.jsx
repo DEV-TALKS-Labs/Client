@@ -1,28 +1,39 @@
+"use client";
 import MultiSelect from "./MultiSelect";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import Alert from "./Alert";
 
-const PopupModal = ({ visible, onClose }) => {
-  const options = [
-    "Option 1",
-    "Option 2",
-    "Option 3",
-    "Option 4",
-    "Option 5",
-    "Option 6",
-    "Option 7",
-    "Option 8",
-    "Option 9",
-    "Option 10",
-    "Option 11",
-    "Option 12",
-    "Option 13",
-    "Option 14",
-    "Option 15",
-    "Option 16",
-    ];
+const PopupModal = ({ visible, onClose, token }) => {
+  const [title, setTitle] = useState("");
+  const [maxPeople, setMaxPeople] = useState(12);
+  const [filters, setFilters] = useState([]);
 
-    const createRoom = () => {
-      console.log("create room");
-    }
+  useEffect(() => {
+    axios.get("http://localhost:8080/api/filters").then((res) => {
+      setFilters(res.data);
+    });
+  }, []);
+
+  const createRoom = (e) => {
+    e.preventDefault();
+    axios
+      .post(
+        "http://localhost:8080/api/rooms",
+        {
+          title,
+          maxUsers: parseInt(maxPeople),
+          isPublic: true,
+          filters: ["FrontEnd"],
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then(() => onClose());
+  };
 
   return (
     <>
@@ -61,40 +72,46 @@ const PopupModal = ({ visible, onClose }) => {
                   Create new room
                 </h3>
 
-                <label className="text-sm font-semibold flex">
-                  <span className="text-white dark:text-gray-400 mx-5">
-                    Room Title
-                  </span>
-                  <input
-                    type="text"
-                    className="block w-full p-3 border border-gray-300 rounded mb-4"
-                    placeholder="Title"
-                  />
-                </label>
+                <form onSubmit={createRoom}>
+                  <label className="text-sm font-semibold flex">
+                    <span className="text-white dark:text-gray-400 mx-5">
+                      Room Title
+                    </span>
+                    <input
+                      onChange={(e) => {
+                        setTitle(e.target.value);
+                      }}
+                      type="text"
+                      className="block w-full p-3 border border-gray-300 rounded mb-4"
+                      placeholder="Title"
+                    />
+                  </label>
 
-                <label className="text-sm font-semibold flex">
-                  <span className="text-gray-700 dark:text-gray-400 mx-5">
-                    Max people
-                  </span>
-                  <input
-                    type="number"
-                    className="block w-full p-3 border border-gray-300 rounded mb-4"
-                    placeholder="Max people (12)"
-                    max={12}
-                    min={2}
-                  />
-                </label>
-                
-                <MultiSelect options={options}/>
-                
-                <button
-                  onClick={createRoom}
-                  type="button"
-                  className="text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2"
-                  data-modal-hide="popup-modal"
-                >
-                  Create new room
-                </button>
+                  <label className="text-sm font-semibold flex">
+                    <span className="text-gray-700 dark:text-gray-400 mx-5">
+                      Max people
+                    </span>
+                    <input
+                      onChange={(e) => {
+                        setMaxPeople(e.target.value);
+                      }}
+                      type="number"
+                      className="block w-full p-3 border border-gray-300 rounded mb-4"
+                      placeholder="Max people (12)"
+                      max={12}
+                      min={2}
+                    />
+                  </label>
+                  <MultiSelect options={filters} />
+
+                  <button
+                    type="submit"
+                    className="text-white bg-blue-500 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center me-2"
+                    data-modal-hide="popup-modal"
+                  >
+                    Create new room
+                  </button>
+                </form>
               </div>
             </div>
           </div>

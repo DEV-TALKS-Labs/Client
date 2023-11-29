@@ -1,9 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import PopupModal from "./Popup";
 
-export default function AddNewRoom() {
+export default function AddNewRoom({ token }) {
   const [isVisible, setIsVisible] = useState(false);
+  
   const togleIsVisible = () => {
     setIsVisible(!isVisible);
   };
@@ -21,7 +22,7 @@ export default function AddNewRoom() {
         </p>
       </button>
 
-      <PopupModal visible={isVisible} onClose={togleIsVisible} />
+      <PopupModal visible={isVisible} onClose={togleIsVisible} token={token} />
     </>
   );
 }
