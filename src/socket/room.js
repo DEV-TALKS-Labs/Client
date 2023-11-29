@@ -1,5 +1,5 @@
-const emitCreateRoom = (socket, room) => {
-  socket.emit("room:add", room);
+const emitCreateRoom = (socket, data) => {
+  socket.emit("room:add", data);
 };
 
 const emitJoinRoom = (socket, room) => {
@@ -17,9 +17,9 @@ const emitTest = (socket, data) => {
 //  Socket listeners //
 //------------------//
 
-const onNewRoom = (socket) => {
+const onNewRoom = (socket, setRoomList) => {
   socket.on("room:new", (room) => {
-    console.log("New room created: " + room.title);
+    setRoomList((prev) => [...prev, room.body]);
   });
 };
 
@@ -41,11 +41,18 @@ const onTest = (socket) => {
   });
 };
 
-const onSocket = (socket) => {
+const onSocket = (socket, setRoomList) => {
   onUserJoined(socket);
-  onNewRoom(socket);
   onErrorHandler(socket);
   onTest(socket);
 };
 
-export { emitCreateRoom, emitJoinRoom, emitLeaveRoom, emitTest, onSocket };
+export {
+  emitCreateRoom,
+  emitJoinRoom,
+  emitLeaveRoom,
+  emitTest,
+  onSocket,
+  onNewRoom,
+  onTest,
+};
