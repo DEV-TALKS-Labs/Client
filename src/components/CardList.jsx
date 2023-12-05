@@ -19,7 +19,7 @@ export default function CardList({ rooms, token }) {
     <div className='flex flex-wrap'>
       <AddNewRoom token={token} />
       {roomList.map((room) => {
-        return <Card key={room.id} title={room.title} />;
+        return <Card key={room.id} data={room} />;
       })}
     </div>
   );
