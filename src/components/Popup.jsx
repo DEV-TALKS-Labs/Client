@@ -29,7 +29,7 @@ const PopupModal = ({ visible, onClose, token }) => {
       },
       headers: {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `${token}`,
         },
       },
     });

@@ -9,10 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@clerk/clerk-js": "^4.65.5",
-    "@clerk/nextjs": "^4.27.2",
     "axios": "^1.6.2",
+    "js-cookie": "^3.0.5",
     "next": "14.0.3",
+    "next-auth": "^4.24.5",
     "react": "^18",
     "react-dom": "^18",
     "socket.io-client": "^4.1.3"

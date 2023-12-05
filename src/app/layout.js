@@ -1,8 +1,6 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
 import { SocketProvider } from "@/context/socketContext";
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -12,14 +10,14 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider>
+
       <SocketProvider>
-        <html lang="en">
+        <html lang='en'>
           <body className={inter.className}>
-            <div className="min-h-screen flex flex-col">{children}</div>
+            <div className='min-h-screen flex flex-col'>{children}</div>
           </body>
         </html>
       </SocketProvider>
-    </ClerkProvider>
+
   );
 }
