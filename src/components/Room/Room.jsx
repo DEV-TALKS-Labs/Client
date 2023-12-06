@@ -5,28 +5,37 @@ import { cookies } from "next/headers";
 import axios from "axios";
 export async function Room({ currentRoomId }) {
   //TODO: room Users
-  console.log(currentRoomId);
 
-  const token = cookies().get("next-auth.session-token").value;
-  const body = {};
-  const room = await axios.get(
-    `http://localhost:8080/api/rooms/${currentRoomId}`,
-    {
-      headers: {
-        Authorization: `${token}`,
-      },
-      data: {
-        roomUsers: true,
-      },
+  const fetchData = async () => {
+    if (currentRoomId === "favicon.ico") return null;
+    const token = cookies().get("next-auth.session-token").value;
+    try {
+      const response = await axios.get(
+        `http://localhost:8080/api/rooms/${currentRoomId}`,
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+          data: {
+            roomUsers: true,
+          },
+        }
+      );
+
+      return response.data;
+    } catch (err) {
+      console.log("rooms", err);
+      return null;
     }
-  );
+  };
 
-  console.log("im here", room.data);
+  const roomData = await fetchData();
+
   return (
     <div className='grid h-screen grid-cols-5 gap-4'>
       <ChatingArea />
       <SharingArea />
-      <UsersArea data={room.data} />
+      <UsersArea data={roomData} />
     </div>
   );
 }

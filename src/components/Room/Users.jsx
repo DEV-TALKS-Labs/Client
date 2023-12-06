@@ -11,9 +11,10 @@ import Image from "next/image";
 export function UsersArea(data) {
   // on join room update userslist
   // current users List
-
+  if (!data.data) {
+    return null;
+  }
   const { roomUsers, id, hostId, coHostId } = data.data;
-  console.log(roomUsers, id, hostId, coHostId);
   return (
     <div className='col-span-2 flex flex-col gap-4 p-4'>
       <h2 className='text-xl font-semibold'>Users</h2>
@@ -30,12 +31,7 @@ function UserCard({ user, hostId, coHostId }) {
   return (
     <Card className='rounded-full flex items-center gap-4 p-4'>
       <Avatar className='h-9 w-9 rounded-full'>
-        <Image
-          alt={name}
-          src={imageUrl}
-          className='object-cover'
-          layout='fill'
-        />
+      <AvatarImage src={imageUrl} alt={user.name} />
         <AvatarFallback>User</AvatarFallback>
       </Avatar>
       <div className='flex-1'>
@@ -54,15 +50,14 @@ function IconVolumeoff(props) {
   return (
     <svg
       {...props}
-      xmlns='http://www.w3.org/2000/svg'
       width='24'
       height='24'
       viewBox='0 0 24 24'
       fill='none'
       stroke='currentColor'
-      stroke-width='2'
-      stroke-linecap='round'
-      stroke-linejoin='round'
+      strokeWidth='2'
+      strokeLinecap='round'
+      strokeLinejoin='round'
     >
       <polygon points='11 5 6 9 2 9 2 15 6 15 11 19 11 5' />
     </svg>
