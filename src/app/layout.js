@@ -10,14 +10,12 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-
-      <SocketProvider>
-        <html lang='en'>
-          <body className={inter.className}>
-            <div className='min-h-screen flex flex-col'>{children}</div>
-          </body>
-        </html>
-      </SocketProvider>
-
+    <SocketProvider>
+      <html lang='en'>
+        <body className={inter.className}>
+          <div className='min-h-screen flex flex-col'>{children}</div>
+        </body>
+      </html>
+    </SocketProvider>
   );
 }

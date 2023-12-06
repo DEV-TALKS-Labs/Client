@@ -1,3 +1,4 @@
+"use client";
 import {
   AvatarImage,
   AvatarFallback,
@@ -6,15 +7,19 @@ import {
 import { Card } from "@/components/Room/ui/card";
 import { Button } from "@/components/Room/ui/button";
 import { Badge } from "@/components/Room/ui/badge";
-import Image from "next/image";
+import axios from "axios";
 
-export function UsersArea(data) {
+export function UsersArea({ data, currentRoomId }) {
   // on join room update userslist
   // current users List
-  if (!data.data) {
+  // it will send user Cookies to server during request using axios
+  if (!data) {
     return null;
   }
-  const { roomUsers, id, hostId, coHostId } = data.data;
+  axios.defaults.withCredentials = true;
+
+  const { roomUsers, id, hostId, coHostId } = data;
+
   return (
     <div className='col-span-2 flex flex-col gap-4 p-4'>
       <h2 className='text-xl font-semibold'>Users</h2>
@@ -26,12 +31,13 @@ export function UsersArea(data) {
     </div>
   );
 }
+
 function UserCard({ user, hostId, coHostId }) {
   const { id, name, imageUrl } = user;
   return (
     <Card className='rounded-full flex items-center gap-4 p-4'>
       <Avatar className='h-9 w-9 rounded-full'>
-      <AvatarImage src={imageUrl} alt={user.name} />
+        <AvatarImage src={imageUrl} alt={user.name} />
         <AvatarFallback>User</AvatarFallback>
       </Avatar>
       <div className='flex-1'>

@@ -6,18 +6,19 @@ import axios from "axios";
 export async function Room({ currentRoomId }) {
   //TODO: room Users
 
-  const fetchData = async () => {
+  const joinRoom = async () => {
     if (currentRoomId === "favicon.ico") return null;
     const token = cookies().get("next-auth.session-token").value;
     try {
-      const response = await axios.get(
-        `http://localhost:8080/api/rooms/${currentRoomId}`,
+      const response = await axios.patch(
+        `http://localhost:8080/api/rooms/${currentRoomId}/join`,
+        {
+          roomUsers: true,
+        },
         {
           headers: {
             Authorization: `${token}`,
-          },
-          data: {
-            roomUsers: true,
+            "Cache-Control": "no-cache", //disable cache
           },
         }
       );
@@ -29,13 +30,13 @@ export async function Room({ currentRoomId }) {
     }
   };
 
-  const roomData = await fetchData();
+  const roomData = await joinRoom();
 
   return (
     <div className='grid h-screen grid-cols-5 gap-4'>
       <ChatingArea />
       <SharingArea />
-      <UsersArea data={roomData} />
+      <UsersArea data={roomData} currentRoomId={currentRoomId} />
     </div>
   );
 }
