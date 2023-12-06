@@ -1,3 +1,6 @@
+"use client";
+import { useSocket } from "@/context/socketContext";
+import { useEffect, useState } from "react";
 import { Card } from "@/components/Room/ui/card";
 import { Input } from "@/components/Room/ui/input";
 import {
@@ -5,31 +8,63 @@ import {
   AvatarFallback,
   Avatar,
 } from "@/components/Room/ui/avatar";
-export function ChatingArea() {
+
+export function ChatingArea({ roomId, user }) {
+  const socket = useSocket();
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    if (!socket) return;
+    socket.emit("user:joinRoom", roomId);
+    socket.on("message:receive", (message) => {
+      setMessages((messages) => [...messages, message]);
+    });
+  }, [socket]);
+
+  const submitMessage = (e) => {
+    if (e.key === "Enter") {
+      if (e.target.value === "") return;
+      const message = e.target.value;
+      socket.emit("message:send", { message, roomId });
+      e.target.value = "";
+    }
+  };
   return (
-    <div className='col-span-1 flex flex-col gap-4 p-4'>
-      <h2 className='text-xl font-semibold'>Chat</h2>
-      <Card className='h-4/6 overflow-y-auto'>
-        <div className='p-4 space-y-2'></div>
+    <div className="col-span-1 flex flex-col gap-4 p-4">
+      <h2 className="text-xl font-semibold">Chat</h2>
+      <Card className="h-4/6 overflow-y-auto">
+        <div className="p-4 space-y-2 overflow-x-hidden">
+          {messages.map((message, id) => (
+            <Message
+              key={id}
+              user={{ name: user.name, imageUrl: user.image }}
+              message={message}
+            />
+          ))}
+        </div>
       </Card>
-      <div className='mt-2'>
-        <Input className='w-full' placeholder='Type a message...' />
+      <div className="mt-2">
+        <Input
+          className="w-full"
+          placeholder="Type a message..."
+          onKeyDown={submitMessage}
+        />
       </div>
     </div>
   );
 }
 
-function message(user, message) {
+function Message({ user, message }) {
   const { name, imageUrl } = user;
   return (
-    <div className='flex items-center gap-4'>
-      <Avatar className='h-6 w-6 rounded-full'>
+    <div className="flex items-center gap-4">
+      <Avatar className="h-6 w-6 rounded-full">
         <AvatarImage src={imageUrl} alt={name} />
         <AvatarFallback>U</AvatarFallback>
       </Avatar>
-      <div className='flex-1'>
-        <h3 className='font-semibold'>{name}</h3>
-        <p className='text-sm'>{message}</p>
+      <div className="flex-1">
+        <h3 className="font-semibold whitespace-nowrap">{name}</h3>
+        <p className="text-sm">{message}</p>
       </div>
     </div>
   );
