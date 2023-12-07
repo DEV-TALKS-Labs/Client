@@ -29,7 +29,7 @@ export async function Room({ currentRoomId }) {
 
       return response.data;
     } catch (err) {
-      console.log("rooms", err);
+      // console.log("rooms", err);
       return null;
     }
   };

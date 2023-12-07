@@ -3,7 +3,7 @@ import { useSocket } from "../context/socketContext";
 import Card from "./Card";
 import { useEffect, useState } from "react";
 import AddNewRoom from "./NewRoom";
-import { onNewRoom, onRedirect } from "@/socket/room";
+import { onDeleteRoom, onNewRoom, onRedirect } from "@/socket/room";
 import { useRouter } from "next/navigation";
 
 export default function CardList({ rooms, token }) {
@@ -14,6 +14,7 @@ export default function CardList({ rooms, token }) {
   useEffect(() => {
     if (!socket) return;
     onNewRoom(socket, setRoomList);
+    onDeleteRoom(socket, setRoomList);
     onRedirect(socket, push);
   }, [socket]);
   return (

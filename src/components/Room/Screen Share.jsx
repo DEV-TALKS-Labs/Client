@@ -17,16 +17,16 @@ export function SharingArea({ roomId, user }) {
     });
   }, [socket]);
   const leaveRoom = async () => {
-    socket.emit("user:leaveRoom", { roomId });
-    await axios.patch(
-      `http://localhost:8080/api/rooms/${roomId}/leave`,
-      { id: user.id },
-      {
-        headers: {
-          "Cache-Control": "no-cache", //disable cache
-        },
-      }
-    );
+    socket.emit("user:leaveRoom", { roomId, userId:user.id });
+    // await axios.patch(
+    //   `http://localhost:8080/api/rooms/${roomId}/leave`,
+    //   { id: user.id },
+    //   {
+    //     headers: {
+    //       "Cache-Control": "no-cache", //disable cache
+    //     },
+    //   }
+    // );
     push("/");
   };
   return (

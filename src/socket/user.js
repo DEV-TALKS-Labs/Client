@@ -3,3 +3,9 @@ export const onRedirect = (socket, push) => {
     push("/" + id);
   });
 };
+
+export const onUserLeft = (socket, setUserList) => {
+  socket.on("user:left", (userId) => {
+    setUserList((prev) => prev.filter((user) => user.id !== userId));
+  });
+};
