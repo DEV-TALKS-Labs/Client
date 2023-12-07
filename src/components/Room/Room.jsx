@@ -10,9 +10,10 @@ export async function Room({ currentRoomId }) {
 
   const session = await getServerSession(options);
 
+  let token;
   const joinRoom = async () => {
     if (currentRoomId === "favicon.ico") return null;
-    const token = cookies().get("next-auth.session-token").value;
+    token = cookies().get("next-auth.session-token").value;
     try {
       const response = await axios.patch(
         `http://localhost:8080/api/rooms/${currentRoomId}/join`,
@@ -34,13 +35,14 @@ export async function Room({ currentRoomId }) {
     }
   };
 
+
   const roomData = await joinRoom();
 
   return (
     <div className="grid h-screen grid-cols-5 gap-4">
       <ChatingArea roomId={currentRoomId} user={session.user} />
       <SharingArea roomId={currentRoomId} user={session.user} />
-      <UsersArea data={roomData} currentRoomId={currentRoomId} />
+      <UsersArea data={roomData} currentRoomId={currentRoomId} user={session.user} />
     </div>
   );
 }

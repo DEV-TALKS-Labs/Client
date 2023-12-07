@@ -16,6 +16,11 @@ export default function CardList({ rooms, token }) {
     onNewRoom(socket, setRoomList);
     onDeleteRoom(socket, setRoomList);
     onRedirect(socket, push);
+    return () => {
+      socket.off("room:new");
+      socket.off("room:delete");
+      socket.off("user:redirect");
+    };
   }, [socket]);
   return (
     <div className="flex flex-wrap">

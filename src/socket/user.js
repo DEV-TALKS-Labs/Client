@@ -1,11 +1,21 @@
 export const onRedirect = (socket, push) => {
-  socket.on("user:redirect", (id) => {
+  socket.off("user:redirect").on("user:redirect", (id) => {
     push("/" + id);
   });
 };
 
-export const onUserLeft = (socket, setUserList) => {
-  socket.on("user:left", (userId) => {
-    setUserList((prev) => prev.filter((user) => user.id !== userId));
-  });
+export const onUserJoined = (socket, setRoomUsersList) => {
+  const userJoined = (user) => {
+    setRoomUsersList((prev) => [...prev, user]);
+  };
+  socket.off("user:joined", userJoined).on("user:joined", userJoined);
+};
+
+export const onUserLeft = (socket, setRoomUsersList) => {
+  const userLeft = (userId) => {
+    setRoomUsersList((prev) => {
+      return prev.filter((user) => user.id !== userId);
+    });
+  };
+  socket.off("user:left", userLeft).on("user:left", userLeft);
 };

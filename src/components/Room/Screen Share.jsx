@@ -4,7 +4,6 @@ import { Button } from "@/components/Room/ui/button";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSocket } from "@/context/socketContext";
-import axios from "axios";
 
 export function SharingArea({ roomId, user }) {
   const socket = useSocket();
@@ -17,16 +16,7 @@ export function SharingArea({ roomId, user }) {
     });
   }, [socket]);
   const leaveRoom = async () => {
-    socket.emit("user:leaveRoom", { roomId, userId:user.id });
-    // await axios.patch(
-    //   `http://localhost:8080/api/rooms/${roomId}/leave`,
-    //   { id: user.id },
-    //   {
-    //     headers: {
-    //       "Cache-Control": "no-cache", //disable cache
-    //     },
-    //   }
-    // );
+    socket.emit("user:leaveRoom", { roomId, userId: user.id });
     push("/");
   };
   return (

@@ -1,4 +1,4 @@
-import { onRedirect, onUserLeft } from "./user";
+import { onRedirect, onUserLeft, onUserJoined } from "./user";
 
 const emitCreateRoom = (socket, data) => {
   socket.emit("room:add", data);
@@ -20,22 +20,17 @@ const emitTest = (socket, data) => {
 //------------------//
 
 const onNewRoom = (socket, setRoomList) => {
-  socket.on("room:new", (room) => {
+  socket.off("room:new").on("room:new", (room) => {
     setRoomList((prev) => [...prev, room.body]);
   });
 };
 
 const onDeleteRoom = (socket, setRoomList) => {
-  socket.on("room:delete", (roomId) => {
+  socket.off("room:delete").on("room:delete", (roomId) => {
     setRoomList((prev) => prev.filter((room) => room.id !== roomId));
   });
 };
 
-const onUserJoined = (socket) => {
-  socket.on("user:joined", (name) => {
-    console.log("user joined: " + name);
-  });
-};
 
 const onErrorHandler = (socket) => {
   socket.on("errorHandler", (err) => {
@@ -66,4 +61,5 @@ export {
   onTest,
   onRedirect,
   onUserLeft,
+  onUserJoined,
 };

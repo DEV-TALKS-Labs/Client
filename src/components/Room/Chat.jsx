@@ -15,17 +15,14 @@ export function ChatingArea({ roomId, user }) {
 
   useEffect(() => {
     if (!socket) return;
-    socket.emit("user:joinRoom", roomId);
+    socket.emit("user:joinRoom", {roomId, user});
     socket.on("message:receive", ({message, user}) => {
       setMessages((messages) => [...messages, {message, user}]);
     });
 
-    socket.on("user:left", (roomId) => {
-      console.log(roomId);
-    });
-    // return () => {
-    //   socket.emit("user:leaveRoom", {roomId});
-    // };
+    return () => {
+      socket.off("message:receive");
+    }
   }, [socket]);
 
   const submitMessage = (e) => {
