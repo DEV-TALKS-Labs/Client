@@ -16,16 +16,23 @@ export function ChatingArea({ roomId, user }) {
   useEffect(() => {
     if (!socket) return;
     socket.emit("user:joinRoom", roomId);
-    socket.on("message:receive", (message) => {
-      setMessages((messages) => [...messages, message]);
+    socket.on("message:receive", ({message, user}) => {
+      setMessages((messages) => [...messages, {message, user}]);
     });
+
+    socket.on("user:left", (roomId) => {
+      console.log(roomId);
+    });
+    // return () => {
+    //   socket.emit("user:leaveRoom", {roomId});
+    // };
   }, [socket]);
 
   const submitMessage = (e) => {
     if (e.key === "Enter") {
       if (e.target.value === "") return;
       const message = e.target.value;
-      socket.emit("message:send", { message, roomId });
+      socket.emit("message:send", { message, user, roomId });
       e.target.value = "";
     }
   };
@@ -37,8 +44,8 @@ export function ChatingArea({ roomId, user }) {
           {messages.map((message, id) => (
             <Message
               key={id}
-              user={{ name: user.name, imageUrl: user.image }}
-              message={message}
+              user={{ name: message.user.name, imageUrl: message.user.image }}
+              message={message.message}
             />
           ))}
         </div>

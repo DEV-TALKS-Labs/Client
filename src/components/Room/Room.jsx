@@ -9,7 +9,6 @@ export async function Room({ currentRoomId }) {
   //TODO: room Users
 
   const session = await getServerSession(options);
-  console.log(session);
   const token = cookies().get("next-auth.session-token").value;
 
   const joinRoom = async () => {
@@ -41,7 +40,7 @@ export async function Room({ currentRoomId }) {
     <div className='grid h-screen grid-cols-5 gap-4'>
       <ChatingArea roomId={currentRoomId} user={session.user
       } />
-      <SharingArea />
+      <SharingArea roomId={currentRoomId} user={session.user} />
       <UsersArea data={roomData} currentRoomId={currentRoomId} />
     </div>
   );

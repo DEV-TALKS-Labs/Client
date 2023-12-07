@@ -1,10 +1,7 @@
-import Card from "@/components/Card";
 import CardList from "@/components/CardList";
 import Footer from "@/components/Footer.jsx";
 import MultiSelect from "@/components/MultiSelect";
 import Navbar from "@/components/NavBar";
-import AddNewRoom from "@/components/NewRoom";
-import PopupModal from "@/components/Popup";
 import SearchBar from "@/components/SearchBar";
 import axios from "axios";
 import { getServerSession } from "next-auth";
@@ -15,7 +12,6 @@ import { cookies } from "next/headers";
 // import { useEffect } from "react";
 
 export default async function Home() {
-  // const { getToken, userId } = auth();
 
   const rooms = await axios.get("http://localhost:8080/api/rooms");
   const options = await axios.get("http://localhost:8080/api/filters");
