@@ -1,3 +1,5 @@
+import { onRedirect } from "./user";
+
 const emitCreateRoom = (socket, data) => {
   socket.emit("room:add", data);
 };
@@ -41,7 +43,7 @@ const onTest = (socket) => {
   });
 };
 
-const onSocket = (socket, setRoomList) => {
+const onSocket = (socket) => {
   onUserJoined(socket);
   onErrorHandler(socket);
   onTest(socket);
@@ -55,4 +57,5 @@ export {
   onSocket,
   onNewRoom,
   onTest,
+  onRedirect,
 };
