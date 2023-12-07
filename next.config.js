@@ -2,6 +2,7 @@ const { protocol } = require("socket.io-client");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: false,
   images: {
     remotePatterns: [
       {

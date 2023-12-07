@@ -5,14 +5,9 @@ import Navbar from "@/components/NavBar";
 import SearchBar from "@/components/SearchBar";
 import axios from "axios";
 import { getServerSession } from "next-auth";
-
 import { cookies } from "next/headers";
 
-// import { useSocket } from "@/context/socketContext";
-// import { useEffect } from "react";
-
 export default async function Home() {
-
   const rooms = await axios.get("http://localhost:8080/api/rooms");
   const options = await axios.get("http://localhost:8080/api/filters");
   const session = await getServerSession();
@@ -23,9 +18,9 @@ export default async function Home() {
 
   return (
     <>
-      <main className='flex-grow'>
+      <main className="flex-grow">
         <Navbar />
-        <div className='h-full m-auto max-w-[80%] mt-4'>
+        <div className="h-full m-auto max-w-[80%] mt-4">
           <SearchBar />
           <MultiSelect options={options.data} />
           <CardList rooms={rooms.data} token={token} />
