@@ -2,7 +2,6 @@
 import { Card } from "@/components/Room/ui/card";
 import { Button } from "@/components/Room/ui/button";
 import { useEffect } from "react";
-import { useHistory } from "react-router-dom";
 import { useRouter } from "next/navigation";
 import { useSocket } from "@/context/socketContext";
 import axios from "axios";
@@ -17,9 +16,9 @@ export function SharingArea({ roomId, user }) {
       console.log(roomId);
     });
   }, [socket]);
-  const leaveRoom = () => {
+  const leaveRoom = async () => {
     socket.emit("user:leaveRoom", { roomId });
-    axios.patch(
+    await axios.patch(
       `http://localhost:8080/api/rooms/${roomId}/leave`,
       { id: user.id },
       {
