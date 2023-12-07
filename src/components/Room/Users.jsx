@@ -24,8 +24,8 @@ export function UsersArea({ data, currentRoomId }) {
     <div className='col-span-2 flex flex-col gap-4 p-4'>
       <h2 className='text-xl font-semibold'>Users</h2>
       <div className='grid gap-4 '>
-        {roomUsers.map((user) => (
-          <UserCard key={id} user={user} hostId={hostId} coHostId={coHostId} />
+        {roomUsers.map((user, idx) => (
+          <UserCard key={idx} user={user} hostId={hostId} coHostId={coHostId} />
         ))}
       </div>
     </div>
