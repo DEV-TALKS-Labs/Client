@@ -46,17 +46,17 @@ export function UsersArea({ currentRoomId, user }) {
     return () => {
       socket.off("user:joined");
       socket.off("user:left");
-      socket.emit("user:leaveRoom", { currentRoomId, userId:user.id });
+      socket.emit("user:leaveRoom", { currentRoomId, userId: user.id });
     };
   }, [socket]);
 
   const { id, hostId, coHostId } = data;
 
   return (
-    <div className="col-span-2 flex flex-col gap-4 p-4">
+    <div className="col-span-1 flex flex-col gap-4 p-4 overflow-y-auto">
       <h2 className="text-xl font-semibold">Users</h2>
-      <div className="grid gap-4 ">
-        {roomUsersList?.map((user) => (
+      <div className="flex flex-col gap-4 overflow-x-hidden overflow-y-auto h-4/6">
+        {roomUsersList.map((user) => (
           <UserCard
             key={user.id}
             user={user}
