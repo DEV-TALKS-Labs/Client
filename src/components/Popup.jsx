@@ -102,7 +102,7 @@ const PopupModal = ({ visible, onClose, token }) => {
                       min={2}
                     />
                   </label>
-                  <MultiSelect options={filters} />
+                  <MultiSelect options={filters} creatNewRoomMode={true} />
 
                   <button
                     type="submit"
