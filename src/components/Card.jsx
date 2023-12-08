@@ -3,7 +3,6 @@ import React from "react";
 
 export default function Card({ data }) {
   const { id, title } = data;
-  console.log(data);
   return (
     <Link
       href={`/${id}`}

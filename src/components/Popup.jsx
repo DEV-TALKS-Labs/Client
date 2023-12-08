@@ -10,6 +10,7 @@ const PopupModal = ({ visible, onClose, token }) => {
   const [maxPeople, setMaxPeople] = useState(12);
   const [filters, setFilters] = useState([]);
   const [isPrivet, setIsPrivet] = useState(false);
+  const [selectedFilters, setSelectedFilters] = useState([]);
   const socket = useSocket();
 
   useEffect(() => {
@@ -25,7 +26,7 @@ const PopupModal = ({ visible, onClose, token }) => {
         title,
         maxUsers: parseInt(maxPeople),
         isPublic: !isPrivet,
-        filters: ["FrontEnd"],
+        filters: selectedFilters,
       },
       headers: {
         headers: {
@@ -115,7 +116,7 @@ const PopupModal = ({ visible, onClose, token }) => {
                       />
                     </span>
                   </label>
-                  <MultiSelect options={filters} creatNewRoomMode={true} />
+                  <MultiSelect options={filters} creatNewRoomMode={true} setSelectedFilters={setSelectedFilters}/>
 
                   <button
                     type='submit'
