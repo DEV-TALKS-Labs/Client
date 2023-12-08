@@ -7,7 +7,8 @@ export default function pageId({ params }) {
   const currentRoomId = params.id;
 
   return (
-    <div>
+    <div  className="h-screen">
+      {/* height" 100vh;  //height: 100vh*/}
       <Navbar />
       <Room currentRoomId={currentRoomId} />
       <Footer />
