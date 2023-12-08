@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 
 export default function CardList({ rooms, token }) {
   const socket = useSocket();
-  const [roomList, setRoomList] = useState(rooms);
+  const [roomList, setRoomList] = useState(rooms.data);
   const { push } = useRouter();
 
   useEffect(() => {
