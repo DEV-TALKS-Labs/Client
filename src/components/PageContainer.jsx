@@ -5,30 +5,43 @@ import MultiSelect from "./MultiSelect";
 import CardList from "./CardList";
 
 function PageContainer({ options, rooms: allRooms, token }) {
-  const [selected, setSelected] = useState([]);
   const [rooms, setRooms] = useState(allRooms.data);
+  const [selected, setSelected] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
 
   useEffect(() => {
     const filterRooms = () => {
-      if (selected.length === 0) {
+      let filteredRooms;
+
+      if (selected.length === 0 && searchValue === "") {
         setRooms(allRooms.data);
-      } else {
-        const filteredRooms = allRooms.data.filter((room) =>
-          room.filters.some((filter) => {
-            return selected.some(
-              (selectedFilter) => selectedFilter.name === filter.name
-            );
-          })
-        );
-        setRooms(filteredRooms);
+        return;
       }
+
+      filteredRooms = allRooms.data.filter((room) => {
+        const hasSelectedFilter = selected.some((selectedFilter) =>
+          room.filters.some((filter) => filter.name === selectedFilter.name)
+        );
+
+        const hasSearchValue = room.title.toLowerCase().includes(searchValue);
+
+        return selected.length === 0
+          ? hasSearchValue
+          : hasSelectedFilter && hasSearchValue;
+      });
+
+      setRooms(filteredRooms);
     };
     filterRooms();
-  }, [selected]);
+  }, [selected, searchValue]);
+
+  const searchFilter = (e) => {
+    setSearchValue(e.target.value.toLowerCase());
+  };
 
   return (
     <div className="h-full m-auto max-w-[80%] mt-4">
-      <SearchBar />
+      <SearchBar searchFilter={searchFilter} />
       <MultiSelect options={options} setSelected={setSelected} />
       <CardList rooms={rooms} token={token} setRoomList={setRooms} />
     </div>
