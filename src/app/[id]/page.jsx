@@ -8,7 +8,6 @@ export default function pageId({ params }) {
 
   return (
     <div  className="h-screen">
-      {/* height" 100vh;  //height: 100vh*/}
       <Navbar />
       <Room currentRoomId={currentRoomId} />
       <Footer />

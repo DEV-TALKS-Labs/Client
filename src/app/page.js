@@ -2,6 +2,7 @@ import CardList from "@/components/CardList";
 import Footer from "@/components/Footer.jsx";
 import MultiSelect from "@/components/MultiSelect";
 import Navbar from "@/components/NavBar";
+import PageContainer from "@/components/PageContainer";
 import SearchBar from "@/components/SearchBar";
 import axios from "axios";
 import { getServerSession } from "next-auth";
@@ -20,11 +21,7 @@ export default async function Home() {
     <>
       <main className="flex-grow">
         <Navbar />
-        <div className="h-full m-auto max-w-[80%] mt-4">
-          <SearchBar />
-          <MultiSelect options={options.data} />
-          <CardList rooms={rooms.data} token={token} />
-        </div>
+        <PageContainer options={options.data} rooms={rooms.data} token={token} />
       </main>
       <Footer />
     </>

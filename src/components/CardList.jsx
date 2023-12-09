@@ -6,9 +6,8 @@ import AddNewRoom from "./NewRoom";
 import { onDeleteRoom, onNewRoom, onRedirect } from "@/socket/room";
 import { useRouter } from "next/navigation";
 
-export default function CardList({ rooms, token }) {
+export default function CardList({ rooms, token, setRoomList }) {
   const socket = useSocket();
-  const [roomList, setRoomList] = useState(rooms.data);
   const { push } = useRouter();
 
   useEffect(() => {
@@ -25,7 +24,7 @@ export default function CardList({ rooms, token }) {
   return (
     <div className="flex flex-wrap">
       <AddNewRoom token={token} />
-      {roomList.map((room, idx) => {
+      {rooms.map((room, idx) => {
         return <Card key={idx} data={room} />;
       })}
     </div>

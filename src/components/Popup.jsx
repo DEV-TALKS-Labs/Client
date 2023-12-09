@@ -116,7 +116,7 @@ const PopupModal = ({ visible, onClose, token }) => {
                       />
                     </span>
                   </label>
-                  <MultiSelect options={filters} creatNewRoomMode={true} setSelectedFilters={setSelectedFilters}/>
+                  <MultiSelect options={filters} creatNewRoomMode={true} setSelected={setSelectedFilters}/>
 
                   <button
                     type='submit'

@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 
-const MultiSelect = ({ options, numberOfVisibles, creatNewRoomMode, setSelectedFilters}) => {
+const MultiSelect = ({ options, numberOfVisibles, creatNewRoomMode, setSelected}) => {
   const [selectedItems, setSelectedItems] = useState([]);
   const [showAllOptions, setShowAllOptions] = useState(false);
 
@@ -10,12 +10,10 @@ const MultiSelect = ({ options, numberOfVisibles, creatNewRoomMode, setSelectedF
   const handleSelectionChange = (value) => {
     if (selectedItems.includes(value)) {
       setSelectedItems(selectedItems.filter((item) => item !== value));
-      if (setSelectedFilters)
-        setSelectedFilters(selectedItems.filter((item) => item !== value));
+      setSelected(selectedItems.filter((item) => item !== value));
     } else {
       setSelectedItems([...selectedItems, value]);
-      if (setSelectedFilters)
-        setSelectedFilters([...selectedItems, value]);
+      setSelected([...selectedItems, value]);
     }
   };
   const visibleOptions = showAllOptions
