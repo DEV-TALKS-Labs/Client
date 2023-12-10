@@ -75,6 +75,10 @@ function UserCard({ user, hostId, coHostId }) {
   // TODO: make imageUrl and image the same
   const imageUrl = user.imageUrl || user.image;
   const { id, name } = user;
+  const [isMuted, setIsMuted] = useState(false);
+  const toggleMute = () => {
+    setIsMuted((prevIsMuted) => !prevIsMuted);
+  };
   return (
     <Card className="rounded-full flex items-center gap-4 p-4">
       <Avatar className="h-9 w-9 rounded-full">
@@ -86,13 +90,19 @@ function UserCard({ user, hostId, coHostId }) {
         {id === hostId && <Badge>Host</Badge>}
         {id === coHostId && <Badge>Co-Host</Badge>}
       </div>
-      <Button size="icon" variant="ghost">
-        <IconVolumeoff className="h-6 w-6" />
-        <span className="sr-only">Mute {name}</span>
+      <Button size="icon" variant="ghost" onClick={toggleMute}>
+        {isMuted ? (
+          <IconVolumeoff className="w-6 h-6 " />
+        ) : (
+          <IconVolumeup className="w-6 h-6" />
+        )}
+        <span className="sr-only">{isMuted ? `Unmute ${name}` : `Mute ${name}`}</span>
       </Button>
     </Card>
   );
 }
+
+//off icon with another color
 function IconVolumeoff(props) {
   return (
     <svg
@@ -100,13 +110,33 @@ function IconVolumeoff(props) {
       width="24"
       height="24"
       viewBox="0 0 24 24"
-      fill="none"
       stroke="currentColor"
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
       <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+      <line x1="23" y1="9" x2="17" y2="15" />
+      <line x1="17" y1="9" x2="23" y2="15" />
     </svg>
   );
 }
+
+function IconVolumeup(props) {
+  return (
+    <svg
+      {...props}
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+    </svg>
+  );
+}
+
