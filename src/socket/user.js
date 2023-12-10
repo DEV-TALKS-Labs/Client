@@ -6,7 +6,11 @@ export const onRedirect = (socket, push) => {
 
 export const onUserJoined = (socket, setRoomUsersList) => {
   const userJoined = (user) => {
-    setRoomUsersList((prev) => [...prev, user]);
+    setRoomUsersList((prev) => {
+      // TODO: escape first time user join list adds the user twice
+      if (prev.find((u) => u.id === user.id)) return prev;
+      else return [...prev, user];
+    });
   };
   socket.off("user:joined", userJoined).on("user:joined", userJoined);
 };

@@ -72,7 +72,9 @@ export function UsersArea({ currentRoomId, user }) {
 }
 
 function UserCard({ user, hostId, coHostId }) {
-  const { id, name, imageUrl } = user;
+  // TODO: make imageUrl and image the same
+  const imageUrl = user.imageUrl || user.image;
+  const { id, name } = user;
   return (
     <Card className="rounded-full flex items-center gap-4 p-4">
       <Avatar className="h-9 w-9 rounded-full">
