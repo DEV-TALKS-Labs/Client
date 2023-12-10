@@ -53,10 +53,10 @@ export function UsersArea({ currentRoomId, user }) {
   const { id, hostId, coHostId } = data;
 
   return (
-    <div className="col-span-1 flex flex-col gap-4 p-4 overflow-y-scroll relative h-[500px] overflow-x-hidden left-0">
+    <div className="col-span-1 flex flex-col gap-4 p-4 overflow-y-scroll relative">
       {/* position:relative; height:500px; overflow-x:hidden; left: 0; */}
       <h2 className="text-xl font-semibold ">Users</h2>
-      <div className="flex flex-col gap-4 overflow-x-hidden overflow-y-hidden  ">
+      <div className="flex flex-col gap-4">
         {/* style="position: absolute; width: 300px" */}
         {roomUsersList.map((user) => (
           <UserCard

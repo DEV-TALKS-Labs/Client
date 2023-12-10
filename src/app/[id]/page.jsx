@@ -7,10 +7,13 @@ export default function pageId({ params }) {
   const currentRoomId = params.id;
 
   return (
-    <div  className="h-screen">
-      <Navbar />
-      <Room currentRoomId={currentRoomId} />
-      <Footer />
-    </div>
+    <>
+      <main className="flex-grow h-screen">
+        <Navbar />
+        <Room currentRoomId={currentRoomId} />
+        <Footer />
+      </main>
+      
+    </>
   );
 }
