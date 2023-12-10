@@ -30,6 +30,7 @@ const MultiSelect = ({ options, numberOfVisibles, creatNewRoomMode, setSelected}
                 type='checkbox'
                 onChange={() => setShowAllOptions(!showAllOptions)}
                 className='hidden'
+                name="showAllOptions"
               />
               <span
                 className={`cursor-pointer p-3 rounded-md ${
@@ -55,6 +56,7 @@ const MultiSelect = ({ options, numberOfVisibles, creatNewRoomMode, setSelected}
                 checked={selectedItems.includes(option)}
                 onChange={() => handleSelectionChange(option)}
                 className='hidden'
+                name="selectedItems"
               />
               <span
                 className={`cursor-pointer p-3 rounded-md ${

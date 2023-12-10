@@ -86,6 +86,7 @@ const PopupModal = ({ visible, onClose, token }) => {
                       type='text'
                       className='block w-full p-3 border border-gray-300 rounded mb-4'
                       placeholder='Title'
+                      name="title"
                     />
                   </label>
 
@@ -102,6 +103,7 @@ const PopupModal = ({ visible, onClose, token }) => {
                       placeholder='Max people (12)'
                       max={12}
                       min={2}
+                      name="maxPeople"
                     />
                   </label>
                   <label className='text-sm font-semibold flex'>
@@ -113,6 +115,7 @@ const PopupModal = ({ visible, onClose, token }) => {
                         }}
                         type='checkbox'
                         className='h-5 w-5 text-gray-700 dark:text-gray-400 mx-5'
+                        name="isPrivet"
                       />
                     </span>
                   </label>
