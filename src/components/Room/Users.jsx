@@ -21,7 +21,7 @@ export function UsersArea({ currentRoomId, user }) {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:8080/api/rooms/${currentRoomId}`, {
+      .get(`${process.env.SERVER_API_URL}rooms/${currentRoomId}`, {
         data: {
           roomUsers: true,
         },
@@ -96,7 +96,9 @@ function UserCard({ user, hostId, coHostId }) {
         ) : (
           <IconVolumeup className="w-6 h-6" />
         )}
-        <span className="sr-only">{isMuted ? `Unmute ${name}` : `Mute ${name}`}</span>
+        <span className="sr-only">
+          {isMuted ? `Unmute ${name}` : `Mute ${name}`}
+        </span>
       </Button>
     </Card>
   );
@@ -139,4 +141,3 @@ function IconVolumeup(props) {
     </svg>
   );
 }
-

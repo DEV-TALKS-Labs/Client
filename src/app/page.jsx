@@ -9,8 +9,9 @@ import { getServerSession } from "next-auth";
 import { cookies } from "next/headers";
 
 export default async function Home() {
-  const rooms = await axios.get("http://localhost:8080/api/rooms");
-  const options = await axios.get("http://localhost:8080/api/filters");
+  
+  const rooms = await axios.get(process.env.SERVER_API_URL+"rooms");
+  const options = await axios.get(process.env.SERVER_API_URL+"filters");
   const session = await getServerSession();
   let token = null;
   if (session) {

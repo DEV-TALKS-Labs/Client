@@ -14,7 +14,7 @@ const PopupModal = ({ visible, onClose, token }) => {
   const socket = useSocket();
 
   useEffect(() => {
-    axios.get("http://localhost:8080/api/filters").then((res) => {
+    axios.get(process.env.SERVER_API_URL+"filters").then((res) => {
       setFilters(res.data);
     });
   }, []);

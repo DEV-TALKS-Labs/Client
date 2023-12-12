@@ -16,7 +16,7 @@ export async function Room({ currentRoomId }) {
     token = cookies().get("next-auth.session-token").value;
     try {
       const response = await axios.patch(
-        `http://localhost:8080/api/rooms/${currentRoomId}/join`,
+        `${process.env.SERVER_API_URL}rooms/${currentRoomId}/join`,
         {
           roomUsers: true,
         },

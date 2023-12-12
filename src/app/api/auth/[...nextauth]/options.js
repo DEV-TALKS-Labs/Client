@@ -45,7 +45,7 @@ export const options = {
     async signIn({ user }) {
 
       //TODO: add server Token
-      const addUser = await fetch("http://localhost:8080/api/users", {
+      const addUser = await fetch(process.env.SERVER_API_URL+"users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
