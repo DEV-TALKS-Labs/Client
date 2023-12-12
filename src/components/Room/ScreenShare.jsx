@@ -12,8 +12,9 @@ import PeerVideo from "../PeerVideo";
 export function SharingArea({ roomId, user }) {
   const socket = useSocket();
   const { push } = useRouter();
-  const { peer, myId: peerId, isPeerReady } = usePeer(roomId);
-  const { stream, isSuccess } = useStream();
+  const { peer, myId: peerId, isPeerReady } = usePeer(roomId, user.id);
+  const { stream, isSuccess, toggleAudio, toggleVideo, muted, visible } =
+    useStream();
   const [sharedScreens, setSharedScreens] = useState([]);
   const [startIndex, setStartIndex] = useState(0);
   const [foucsedScreen, setFocusedScreen] = useState(null);
@@ -25,8 +26,8 @@ export function SharingArea({ roomId, user }) {
       const call = peer.call(userId, stream);
       call.on("stream", (stream) => {
         setSharedScreens((prev) => {
-          const streams = prev.filter((s) => s.id !== stream.id);
-          return [...streams, stream];
+          const streams = prev.filter((s) => s.stream.id !== stream.id);
+          return [...streams, { stream, muted }];
         });
       });
 
@@ -40,22 +41,31 @@ export function SharingArea({ roomId, user }) {
     peer.on("call", (call) => {
       call.answer(stream);
       setSharedScreens((prev) => {
-        const streams = prev.filter((s) => s.id !== stream.id);
-        return [...streams, stream];
+        const streams = prev.filter((s) => s.stream.id !== stream.id);
+        return [...streams, { stream, muted }];
       });
       call.on("stream", (friendstream) => {
         if (friendstream.id === stream.id) return;
         setSharedScreens((prev) => {
-          const streams = prev.filter(
-            (stream) => stream.id !== friendstream.id
-          );
-          return [...streams, friendstream];
+          const streams = prev.filter((s) => s.stream.id !== friendstream.id);
+          return [...streams, { stream: friendstream, muted }];
         });
       });
     });
 
+    socket.on("peer:toggleAudio", ({ streamId, muted }) => {
+      const streams = sharedScreens.map((s) => {
+        if (s.stream.id === streamId) {
+          s.muted = muted;
+        }
+        return s;
+      });
+      setSharedScreens(streams);
+    });
+
     return () => {
       socket.off("user:peerConnected");
+      socket.off("user:peerDisconnected");
     };
   }, [isPeerReady, peer, socket, peerId, stream, sharedScreens]);
 
@@ -102,6 +112,18 @@ export function SharingArea({ roomId, user }) {
     }
   };
 
+  const handleToggleAudio = () => {
+    stream.muted = !muted;
+    toggleAudio(stream);
+    socket.emit("peer:toggleAudio", { roomId, streamId: stream.id, muted });
+  };
+
+  const handleToggleVideo = () => {
+    console.log("toggle video", visible);
+    console.log("toggle audio", muted);
+    toggleVideo();
+    // socket.emit("peer:toggleVideo", { roomId, streamId: stream.id });
+  };
   return (
     <div className="col-span-2 flex flex-col gap-4 p-4 overflow-hidden relative">
       <h2 className="text-xl font-semibold">Screen Sharing</h2>
@@ -131,7 +153,7 @@ export function SharingArea({ roomId, user }) {
         >
           {sharedScreens
             .slice(startIndex, startIndex + screensPerPage)
-            .map((screen, index) => (
+            .map(({ stream: screen, muted: isMuted }, index) => (
               <Card
                 key={index}
                 className="h-3/6 cursor-pointer rounded-full"
@@ -144,6 +166,7 @@ export function SharingArea({ roomId, user }) {
                   <p className="text-sm text-gray-500">Shared by:user</p>
                   <div className="flex justify-center">
                     <PeerVideo
+                      isMe={isMuted}
                       stream={screen}
                       className="rounded-full aspect-video object-cover  h-32 w-32"
                     />
@@ -168,13 +191,17 @@ export function SharingArea({ roomId, user }) {
         )}
       </div>
       <div className="flex gap-4">
-        <Button variant="outline">
-          <IconVideocamera className="h-6 w-6 mr-2" />
-          Share Screen
+        <Button variant="outline" onClick={handleToggleAudio}>
+          <IconCamera className="h-6 w-6 mr-2" />
+          Mute Audio
         </Button>
-        <Button variant="outline">
+        <Button variant="outline" onClick={handleToggleVideo}>
           <IconCamera className="h-6 w-6 mr-2" />
           Camera
+        </Button>
+        <Button variant="outline" onClick={e => console.log('share screen')}>
+          <IconVideocamera className="h-6 w-6 mr-2" />
+          Share Screen
         </Button>
       </div>
 

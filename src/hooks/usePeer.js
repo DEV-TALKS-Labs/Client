@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 import { useSocket } from "@/context/socketContext";
 
-const usePeer = (roomId) => {
+const usePeer = (roomId, userId) => {
   const socket = useSocket();
 
   const [isLoading, setIsLoading] = useState(true);
@@ -13,7 +13,7 @@ const usePeer = (roomId) => {
     if (!socket) return;
     (async function createPeerAndJoinRoom() {
       try {
-        const peer = new (await import("peerjs")).default();
+        const peer = new (await import("peerjs")).default(userId);
         setPeer(peer);
         setIsLoading(false);
 
