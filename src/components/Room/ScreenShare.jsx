@@ -4,9 +4,10 @@ import { Button } from "@/components/Room/ui/button";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSocket } from "@/context/socketContext";
-import PeerVideo from "../peer/PeerVideo";
+
 import usePeer from "@/hooks/usePeer";
 import useStream from "@/hooks/useMediaStream";
+import PeerVideo from "../PeerVideo";
 
 export function SharingArea({ roomId, user }) {
   const socket = useSocket();
@@ -26,6 +27,12 @@ export function SharingArea({ roomId, user }) {
         setSharedScreens((prev) => {
           const streams = prev.filter((s) => s.id !== stream.id);
           return [...streams, stream];
+        });
+      });
+
+      socket.on("user:peerDisconnected", (streamId) => {
+        setSharedScreens((prev) => {
+          return prev.filter((s) => s.id !== streamId);
         });
       });
     });
@@ -54,14 +61,17 @@ export function SharingArea({ roomId, user }) {
 
   const leaveRoom = async () => {
     // close mediaDevices
-    await sharedScreens.forEach((screen) => {
-      screen.getTracks().forEach((track) => track.stop());
-    });
+    stream.getTracks().forEach((track) => track.stop());
     if (peer) {
       peer.disconnect();
       peer.destroy();
     }
-    socket.emit("user:leaveRoom", { roomId, userId: user.id });
+
+    socket.emit("user:leaveRoom", {
+      roomId,
+      userId: user.id,
+    });
+    socket.emit("peer:leave", { roomId, streamId: stream.id });
     push("/");
   };
 
@@ -73,12 +83,8 @@ export function SharingArea({ roomId, user }) {
         : `${(index - 1) / 2 + 1} / 2`;
     });
   };
-  const handleScreenClick = (index) => {
-    setFocusedScreen({
-      //user data
-      index,
-      userId: sharedScreens[index],
-    });
+  const handleScreenClick = (screen) => {
+    setFocusedScreen(screen);
   };
 
   const handleNextClick = () => {
@@ -103,9 +109,7 @@ export function SharingArea({ roomId, user }) {
         <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
           <div className="bg-white w-3/4 h-3/4">
             <div className="flex justify-between items-center p-4">
-              <h3 className="text-lg font-semibold">
-                Screen {foucsedScreen.index + 1}
-              </h3>
+              <h3 className="text-lg font-semibold">Screen</h3>
               <button
                 onClick={() => setFocusedScreen(null)}
                 className="bg-red-500 text-white p-2 rounded-md"
@@ -113,7 +117,9 @@ export function SharingArea({ roomId, user }) {
                 Close
               </button>
             </div>
-            <div className="flex justify-center">{/** Screen */}</div>
+            <div className="flex justify-center">
+              <PeerVideo stream={foucsedScreen} />
+            </div>
           </div>
         </div>
       )}
@@ -129,7 +135,7 @@ export function SharingArea({ roomId, user }) {
               <Card
                 key={index}
                 className="h-3/6 cursor-pointer rounded-full"
-                onClick={() => handleScreenClick(index + startIndex)}
+                onClick={() => handleScreenClick(screen)}
               >
                 <div className="p-4 ">
                   <h3 className="text-lg font-semibold">
@@ -137,9 +143,10 @@ export function SharingArea({ roomId, user }) {
                   </h3>
                   <p className="text-sm text-gray-500">Shared by:user</p>
                   <div className="flex justify-center">
-                    <div className="bg-gray-300 w-32 h-32 rounded-full">
-                      <PeerVideo stream={screen} />
-                    </div>
+                    <PeerVideo
+                      stream={screen}
+                      className="rounded-full aspect-video object-cover  h-32 w-32"
+                    />
                   </div>
                 </div>
               </Card>

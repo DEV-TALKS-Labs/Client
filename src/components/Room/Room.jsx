@@ -1,5 +1,5 @@
 import { ChatingArea } from "./Chat";
-import { SharingArea } from "./Screen Share";
+import { SharingArea } from "./ScreenShare";
 import { UsersArea } from "./Users";
 import { cookies } from "next/headers";
 import axios from "axios";

@@ -18,12 +18,9 @@ const usePeer = (roomId) => {
         setIsLoading(false);
 
         peer.on("open", (id) => {
-          console.log("your device id: ", id);
           setMyId(id);
           socket.emit("user:newPeer", { roomId, userId: id });
         });
-
-        peer.on("error", console.error("Failed to setup peer connection"));
       } catch (e) {
         console.error(e);
       }
