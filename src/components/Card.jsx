@@ -6,7 +6,7 @@ export default function Card({ data }) {
   return (
     <Link
       href={`/${id}`}
-      className='block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 flex-shrink-0 w-full sm:w-[30%] md:w-[30%] lg:w-[30%] xl:w-[30%] m-2'
+      className='bg-gray-800 mb-2 md:mr-2 dark:bg-gray-800 dark:hover:bg-gray-700 md:w-[32.1%] w-full p-6 rounded-lg xl:w-[24.3%] h-44 flex flex-col justify-between'
     >
       <h5 className='mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white'>
         {`${title}`}
@@ -14,8 +14,7 @@ export default function Card({ data }) {
       <h6 className='mb-2  font-bold tracking-tight text-gray-900 dark:text-white'>
         {`users ${data._count.roomUsers} / ${data.maxUsers}`}
       </h6>
-      <div>
-        <div className='flex flex-wrap'>
+        <div className='flex flex-wrap overflow-y-auto'>
           {data.filters.map((filter, idx) => {
             return (
               <div
@@ -27,7 +26,6 @@ export default function Card({ data }) {
             );
           })}
         </div>
-      </div>
     </Link>
   );
 }

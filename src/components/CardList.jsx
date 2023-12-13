@@ -22,7 +22,7 @@ export default function CardList({ rooms, token, setRoomList }) {
     };
   }, [socket]);
   return (
-    <div className="flex flex-wrap">
+    <div className="flex flex-wrap max-h-[60vh] overflow-y-auto">
       <AddNewRoom token={token} />
       {rooms.map((room, idx) => {
         return <Card key={idx} data={room} />;

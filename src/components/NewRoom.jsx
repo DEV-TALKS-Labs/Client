@@ -4,7 +4,7 @@ import PopupModal from "./Popup";
 
 export default function AddNewRoom({ token }) {
   const [isVisible, setIsVisible] = useState(false);
-  
+
   const togleIsVisible = () => {
     setIsVisible(!isVisible);
   };
@@ -12,14 +12,12 @@ export default function AddNewRoom({ token }) {
     <>
       <button
         onClick={togleIsVisible}
-        className="block max-w-sm p-6 bg-white border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700 flex-shrink-0 w-full sm:w-[30%] md:w-[30%] lg:w-[30%] xl:w-[30%] m-2"
+        className="bg-gray-800 mb-2 md:mr-2 dark:bg-gray-800 dark:hover:bg-gray-700 w-full md:w-[32.1%] max-w-sm p-6 rounded-lg xl:w-[24.3%] h-44"
       >
-        <h1 className="mb-2 font-bold tracking-tight text-gray-900 dark:text-white text-8xl text-center">
+        <span className="mb-2 font-bold   text-white flex w-full items-center justify-center text-[50px]">
           +
-        </h1>
-        <p className="font-normal text-gray-700 dark:text-gray-400 text-center">
-          Create new room
-        </p>
+        </span>
+        <p className="font-normal text-white text-center">Create new room</p>
       </button>
 
       <PopupModal visible={isVisible} onClose={togleIsVisible} token={token} />

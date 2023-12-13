@@ -156,10 +156,10 @@ export function SharingArea({ roomId, user }) {
             .map(({ stream: screen, muted: isMuted }, index) => (
               <Card
                 key={index}
-                className="h-3/6 cursor-pointer rounded-full"
+                className="border p-4 rounded-md"
                 onClick={() => handleScreenClick(screen)}
               >
-                <div className="p-4 ">
+                <div>
                   <h3 className="text-lg font-semibold">
                     Screen {index + startIndex + 1}
                   </h3>
@@ -168,7 +168,7 @@ export function SharingArea({ roomId, user }) {
                     <PeerVideo
                       isMe={isMuted}
                       stream={screen}
-                      className="rounded-full aspect-video object-cover  h-32 w-32"
+                      className="rounded-full aspect-video object-cover h-28 w-28"
                     />
                   </div>
                 </div>
@@ -190,7 +190,7 @@ export function SharingArea({ roomId, user }) {
           </Button>
         )}
       </div>
-      <div className="flex gap-4">
+      <div className="flex gap-4 flex-wrap mt-auto">
         <Button variant="outline" onClick={handleToggleAudio}>
           <IconCamera className="h-6 w-6 mr-2" />
           Mute Audio
@@ -199,18 +199,17 @@ export function SharingArea({ roomId, user }) {
           <IconCamera className="h-6 w-6 mr-2" />
           Camera
         </Button>
-        <Button variant="outline" onClick={e => console.log('share screen')}>
+        <Button variant="outline" onClick={(e) => console.log("share screen")}>
           <IconVideocamera className="h-6 w-6 mr-2" />
           Share Screen
         </Button>
+        <button
+          onClick={leaveRoom}
+          className="bg-red-500 text-white p-2 rounded-md w-full"
+        >
+          Leave Room
+        </button>
       </div>
-
-      <button
-        onClick={leaveRoom}
-        className="bg-red-500 text-white p-2 rounded-md"
-      >
-        Leave Room
-      </button>
     </div>
   );
 }

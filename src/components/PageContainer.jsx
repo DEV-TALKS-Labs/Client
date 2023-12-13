@@ -40,7 +40,7 @@ function PageContainer({ options, rooms: allRooms, token }) {
   };
 
   return (
-    <div className="h-[85%] m-auto max-w-[85%] mt-4">
+    <div className="h-[83vh] m-auto max-w-[85%] pt-2">
       <SearchBar searchFilter={searchFilter} />
       <MultiSelect options={options} setSelected={setSelected} />
       <CardList rooms={rooms} token={token} setRoomList={setRooms} />
