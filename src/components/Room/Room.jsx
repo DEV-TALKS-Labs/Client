@@ -38,12 +38,7 @@ export async function Room({ currentRoomId }) {
   const roomData = await joinRoom();
 
   return (
-    <div className="grid h-[83vh] grid-cols-5 gap-4 ">
-      <UsersArea
-        data={roomData}
-        currentRoomId={currentRoomId}
-        user={session.user}
-      />
+    <div className="grid h-[83vh] grid-cols-7 gap-4 ">
       <SharingArea roomId={currentRoomId} user={session.user} />
       <ChatingArea roomId={currentRoomId} user={session.user} />
     </div>

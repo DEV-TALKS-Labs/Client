@@ -11,8 +11,9 @@ import axios from "axios";
 import { useSocket } from "@/context/socketContext";
 import { onUserJoined, onUserLeft } from "@/socket/user";
 import { useEffect, useState } from "react";
+import PeerVideo from "../PeerVideo";
 
-export function UsersArea({ currentRoomId, user }) {
+export function UsersArea({ currentRoomId, user, sharedScreens, handleScreenClick }) {
   axios.defaults.withCredentials = true;
 
   const [data, setData] = useState({});
@@ -53,18 +54,59 @@ export function UsersArea({ currentRoomId, user }) {
   const { id, hostId, coHostId } = data;
 
   return (
-    <div className="col-span-1 flex flex-col gap-4 p-4 overflow-y-scroll relative">
-      {/* position:relative; height:500px; overflow-x:hidden; left: 0; */}
+    <div className="col-span-2 flex flex-col gap-4 p-4 overflow-y-scroll relative">
       <h2 className="text-xl font-semibold ">Users</h2>
-      <div className="flex flex-col gap-4">
-        {/* style="position: absolute; width: 300px" */}
-        {roomUsersList.map((user) => (
-          <UserCard
-            key={user.id}
-            user={user}
-            hostId={hostId}
-            coHostId={coHostId}
-          />
+      <div className="flex flex-wrap flex-col gap-4">
+        {sharedScreens.map(({ stream: screen, muted: isMuted }, index) => (
+          <>
+            <Card
+              key={index}
+              className="border p-2 rounded-md group block"
+              onClick={() => handleScreenClick(screen)}
+            >
+              <div className="relative group bg-red-900">
+                <div className="flex justify-center group absolute">
+                  <h3 className="p-1 text-lg font-semibold absolute text-white bg-slate-600 w-full text-center justify-center hidden group-hover:flex group-hover:opacity-70">
+                    Mahmoud Hamdy
+                  </h3>
+                  <PeerVideo
+                    isMe={isMuted}
+                    stream={screen}
+                    className="aspect-video object-cover h-full w-full"
+                  />
+                  <div className="absolute bg-slate-600 w-full justify-center top-full hidden group-hover:flex group-hover:opacity-70">
+                    <Button size="icon" variant="ghost">
+                      {isMuted ? (
+                        <IconVolumeoff className="w-6 h-6 text-white" />
+                      ) : (
+                        <IconVolumeup className="w-6 h-6 text-white" />
+                      )}
+                      <span className="sr-only">
+                        {isMuted ? `Unmute ${name}` : `Mute ${name}`}
+                      </span>
+                    </Button>
+                    <Button size="icon" variant="ghost">
+                      {isMuted ? (
+                        <IconVolumeoff className="w-6 h-6 text-white" />
+                      ) : (
+                        <IconVolumeup className="w-6 h-6 text-white" />
+                      )}
+                      <span className="sr-only">
+                        {isMuted ? `Unmute ${name}` : `Mute ${name}`}
+                      </span>
+                    </Button>
+                  </div>
+                  {/* <div className="absolute bg-slate-500 w-full justify-between p-3 flex group-hover:flex">
+                  <h3 className="text-lg font-semibold relative">
+                    Screen {index + 1}
+                  </h3>
+                  <p className="text-sm text-white relative">Shared by:user</p>
+                    <IconVolumeoff className="w-6 h-6 " />
+                </div> */}
+                </div>
+              </div>
+            </Card>
+          </>
         ))}
       </div>
     </div>
