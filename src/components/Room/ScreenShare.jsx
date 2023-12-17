@@ -8,6 +8,7 @@ import { useSocket } from "@/context/socketContext";
 import usePeer from "@/hooks/usePeer";
 import useStream from "@/hooks/useMediaStream";
 import PeerVideo from "../PeerVideo";
+import { UsersArea } from "./Users";
 
 export function SharingArea({ roomId, user }) {
   const socket = useSocket();
@@ -125,92 +126,66 @@ export function SharingArea({ roomId, user }) {
     // socket.emit("peer:toggleVideo", { roomId, streamId: stream.id });
   };
   return (
-    <div className="col-span-2 flex flex-col gap-4 p-4 overflow-hidden relative">
-      <h2 className="text-xl font-semibold">Screen Sharing</h2>
-      {foucsedScreen && (
-        <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white w-3/4 h-3/4">
-            <div className="flex justify-between items-center p-4">
-              <h3 className="text-lg font-semibold">Screen</h3>
-              <button
-                onClick={() => setFocusedScreen(null)}
-                className="bg-red-500 text-white p-2 rounded-md"
-              >
-                Close
-              </button>
-            </div>
-            <div className="flex justify-center">
-              <PeerVideo stream={foucsedScreen} />
-            </div>
-          </div>
-        </div>
-      )}
+    <>
+      <UsersArea
+        currentRoomId={roomId}
+        user={user}
+        sharedScreens={sharedScreens}
+        handleScreenClick={handleScreenClick}
+      />
+      <div className="col-span-3 flex flex-col gap-4 p-4 overflow-hidden relative">
+        <h2 className="text-xl font-semibold">Screen Sharing</h2>
 
-      {sharedScreens.length > 0 && (
-        <div
-          className={`grid grid-cols-2`}
-          style={{ gridTemplateRows: calculateGrid() }}
-        >
-          {sharedScreens
-            .slice(startIndex, startIndex + screensPerPage)
-            .map(({ stream: screen, muted: isMuted }, index) => (
-              <Card
-                key={index}
-                className="border p-4 rounded-md"
-                onClick={() => handleScreenClick(screen)}
-              >
-                <div>
-                  <h3 className="text-lg font-semibold">
-                    Screen {index + startIndex + 1}
-                  </h3>
-                  <p className="text-sm text-gray-500">Shared by:user</p>
-                  <div className="flex justify-center">
-                    <PeerVideo
-                      isMe={isMuted}
-                      stream={screen}
-                      className="rounded-full aspect-video object-cover h-28 w-28"
-                    />
-                  </div>
-                </div>
-              </Card>
-            ))}
+        {foucsedScreen && (
+          <>
+            <button
+              onClick={() => setFocusedScreen(null)}
+              className="bg-red-500 text-white p-2 rounded-md"
+            >
+              Close
+            </button>
+            <PeerVideo isMe={true} stream={foucsedScreen} className="w-full h-[60%]" />
+          </>
+        )}
+        <div className="flex gap-4  ">
+          {startIndex - screensPerPage >= 0 && (
+            <Button variant="outline" onClick={handlePrevClick}>
+              Prev
+            </Button>
+          )}
+          {/* make space between prev and next button */}
+          <div className="flex-grow"></div>
+          {startIndex + screensPerPage < sharedScreens.length && (
+            <Button variant="outline" onClick={handleNextClick}>
+              Next
+            </Button>
+          )}
         </div>
-      )}
-      <div className="flex gap-4  ">
-        {startIndex - screensPerPage >= 0 && (
-          <Button variant="outline" onClick={handlePrevClick}>
-            Prev
+        <div className="flex gap-4 flex-wrap mt-auto">
+          <Button variant="outline" onClick={handleToggleAudio}>
+            <IconCamera className="h-6 w-6 mr-2" />
+            Mute Audio
           </Button>
-        )}
-        {/* make space between prev and next button */}
-        <div className="flex-grow"></div>
-        {startIndex + screensPerPage < sharedScreens.length && (
-          <Button variant="outline" onClick={handleNextClick}>
-            Next
+          <Button variant="outline" onClick={handleToggleVideo}>
+            <IconCamera className="h-6 w-6 mr-2" />
+            Camera
           </Button>
-        )}
+          <Button
+            variant="outline"
+            onClick={(e) => console.log("share screen")}
+          >
+            <IconVideocamera className="h-6 w-6 mr-2" />
+            Share Screen
+          </Button>
+          <button
+            onClick={leaveRoom}
+            className="bg-red-500 text-white p-2 rounded-md w-full"
+          >
+            Leave Room
+          </button>
+        </div>
       </div>
-      <div className="flex gap-4 flex-wrap mt-auto">
-        <Button variant="outline" onClick={handleToggleAudio}>
-          <IconCamera className="h-6 w-6 mr-2" />
-          Mute Audio
-        </Button>
-        <Button variant="outline" onClick={handleToggleVideo}>
-          <IconCamera className="h-6 w-6 mr-2" />
-          Camera
-        </Button>
-        <Button variant="outline" onClick={(e) => console.log("share screen")}>
-          <IconVideocamera className="h-6 w-6 mr-2" />
-          Share Screen
-        </Button>
-        <button
-          onClick={leaveRoom}
-          className="bg-red-500 text-white p-2 rounded-md w-full"
-        >
-          Leave Room
-        </button>
-      </div>
-    </div>
+    </>
   );
 }
 
