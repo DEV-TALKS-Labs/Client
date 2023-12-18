@@ -4,13 +4,14 @@ import { Button } from "@/components/Room/ui/button";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSocket } from "@/context/socketContext";
-
+import { onUserJoined, onUserLeft } from "@/socket/user";
 import usePeer from "@/hooks/usePeer";
 import useStream from "@/hooks/useMediaStream";
 import PeerVideo from "../PeerVideo";
 import { UsersArea } from "./Users";
-
+import axios from "axios";
 export function SharingArea({ roomId, user }) {
+  axios.defaults.withCredentials = true;
   const socket = useSocket();
   const { push } = useRouter();
   const { peer, myId: peerId, isPeerReady } = usePeer(roomId, user.id);
@@ -21,36 +22,125 @@ export function SharingArea({ roomId, user }) {
   const [foucsedScreen, setFocusedScreen] = useState(null);
   const screensPerPage = 4;
 
+  const [roomUsersList, setRoomUsersList] = useState([]);
+
+
   useEffect(() => {
-    if (!isPeerReady || !peer || !socket || !isSuccess) return;
-    socket.on("user:peerConnected", (userId) => {
-      const call = peer.call(userId, stream);
-      call.on("stream", (stream) => {
-        setSharedScreens((prev) => {
-          const streams = prev.filter((s) => s.stream.id !== stream.id);
-          return [...streams, { stream, muted }];
-        });
+    axios
+      .get(`${process.env.SERVER_API_URL}rooms/${roomId}`, {
+        data: {
+          roomUsers: true,
+        },
+        headers: {
+          "Cache-Control": "no-cache", //disable cache
+        },
+      })
+      .then((res) => {
+        setRoomUsersList(res.data.roomUsers);
+      })
+      .catch((err) => {
+        console.log(err);
       });
+  }, []);
+  useEffect(() => {
+    if (!socket) return;
+    onUserJoined(socket, setRoomUsersList);
+    onUserLeft(socket, setRoomUsersList);
+
+    return () => {
+      socket.off("user:joined");
+      socket.off("user:left");
+      socket.emit("user:leaveRoom", { roomId, userId: user.id });
+    };
+  }, [socket]);
+  useEffect(() => {
+    if (!isPeerReady || !peer || !socket || !isSuccess || !roomUsersList)
+      return;
+    peer.on("disconnected", () => {
+      console.log("peer disconnected");
+      
+    });
+    peer.on("open", (id) => {
+      // set my stream
+      // add my stream to roomUsersList
+      setRoomUsersList((prev) => {
+        const updatedUsersList = prev.map((user) => {
+          if (user.id === id) {
+            return {
+              ...user,
+              stream: stream,
+              muted: muted,
+            };
+          }
+          return user;
+        });
+        // log users list after adding my stream
+        console.log("users list", updatedUsersList);
+
+        return updatedUsersList;
+      });
+    });
+    socket.on("user:peerConnected", (userId) => {
+      if (userId !== user.id) {
+        const call = peer.call(userId, stream);
+        call.on("stream", (stream) => {
+          // add caller stream to roomUsersList
+          setRoomUsersList((prev) => {
+            const updatedUsersList = prev.map((user) => {
+              if (user.id === call.peer) {
+                return {
+                  ...user,
+                  stream: stream,
+                  muted: muted,
+                };
+              }
+              return user;
+            });
+            // log users list after adding my stream
+            console.log("users list", updatedUsersList);
+
+            return updatedUsersList;
+          });
+          console.log("caller peer", call.peer);
+        });
+      }
 
       socket.on("user:peerDisconnected", (streamId) => {
-        setSharedScreens((prev) => {
-          return prev.filter((s) => s.id !== streamId);
+        // remove stream from roomUsersList
+        setRoomUsersList((prev) => {
+          const updatedUsersList = prev.filter(
+            (user) => user?.stream?.id !== streamId
+          );
+          // log users list after removing stream
+          console.log("users list", updatedUsersList);
+
+          return updatedUsersList;
         });
       });
     });
 
     peer.on("call", (call) => {
       call.answer(stream);
-      setSharedScreens((prev) => {
-        const streams = prev.filter((s) => s.stream.id !== stream.id);
-        return [...streams, { stream, muted }];
-      });
       call.on("stream", (friendstream) => {
-        if (friendstream.id === stream.id) return;
-        setSharedScreens((prev) => {
-          const streams = prev.filter((s) => s.stream.id !== friendstream.id);
-          return [...streams, { stream: friendstream, muted }];
+        // add answer  stream to roomUsersList
+        setRoomUsersList((prev) => {
+          const updatedUsersList = prev.map((user) => {
+            if (user.id === call.peer) {
+              return {
+                ...user,
+                stream: stream,
+                muted: muted,
+              };
+            }
+            return user;
+          });
+          // log users list after adding my stream
+          console.log("users list", updatedUsersList);
+
+          return updatedUsersList;
         });
+        // answer stream
+        console.log("answer call from ", call.peer);
       });
     });
 
@@ -68,11 +158,12 @@ export function SharingArea({ roomId, user }) {
       socket.off("user:peerConnected");
       socket.off("user:peerDisconnected");
     };
-  }, [isPeerReady, peer, socket, peerId, stream, sharedScreens]);
+  }, [isPeerReady, peer, socket, peerId, stream, sharedScreens, roomUsersList]);
 
   const leaveRoom = async () => {
     // close mediaDevices
     stream.getTracks().forEach((track) => track.stop());
+    // close peer connection
     if (peer) {
       peer.disconnect();
       peer.destroy();
@@ -128,12 +219,10 @@ export function SharingArea({ roomId, user }) {
   return (
     <>
       <UsersArea
-        currentRoomId={roomId}
-        user={user}
-        sharedScreens={sharedScreens}
+        roomUsersList={roomUsersList}
         handleScreenClick={handleScreenClick}
       />
-      <div className="col-span-3 flex flex-col gap-4 p-4 overflow-hidden relative">
+      <div className="col-span-5 flex flex-col gap-4 p-4 overflow-hidden relative">
         <h2 className="text-xl font-semibold">Screen Sharing</h2>
 
         {foucsedScreen && (
@@ -144,7 +233,11 @@ export function SharingArea({ roomId, user }) {
             >
               Close
             </button>
-            <PeerVideo isMe={true} stream={foucsedScreen} className="w-full h-[60%]" />
+            <PeerVideo
+              isMe={true}
+              stream={foucsedScreen}
+              className="w-full h-[60%]"
+            />
           </>
         )}
         <div className="flex gap-4  ">

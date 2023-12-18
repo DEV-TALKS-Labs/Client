@@ -38,7 +38,7 @@ export function ChatingArea({ roomId, user }) {
     }
   };
   return (
-    <div className="col-span-2 flex flex-col gap-4 p-4 overflow-y-auto">
+    <div className="col-span-3 flex flex-col gap-4 p-4 overflow-y-auto">
       <h2 className="text-xl font-semibold">Chat</h2>
       <Card className="h-4/6 overflow-y-scroll" ref={messagesContainerRef}>
         <div className="p-4 space-y-2 overflow-x-hidden">

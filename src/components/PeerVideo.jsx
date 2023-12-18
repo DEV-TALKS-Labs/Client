@@ -11,10 +11,6 @@ const PeerVideo = ({ stream, name, isMe, className }) => (
       muted={isMe}
       className={className}
     />
-
-    <p className="font-medium absolute bottom-3 left-4 text-xs">
-      <span className="text-white">{name}</span>
-    </p>
   </>
 );
 

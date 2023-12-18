@@ -30,7 +30,7 @@ export async function Room({ currentRoomId }) {
 
       return response.data;
     } catch (err) {
-      // console.log("rooms", err);
+      console.log("rooms", err);
       return null;
     }
   };
@@ -38,7 +38,7 @@ export async function Room({ currentRoomId }) {
   const roomData = await joinRoom();
 
   return (
-    <div className="grid h-[83vh] grid-cols-7 gap-4 ">
+    <div className="grid h-[83vh] grid-cols-10 gap-4 ">
       <SharingArea roomId={currentRoomId} user={session.user} />
       <ChatingArea roomId={currentRoomId} user={session.user} />
     </div>
