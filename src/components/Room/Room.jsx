@@ -5,11 +5,23 @@ import { cookies } from "next/headers";
 import axios from "axios";
 import { getServerSession } from "next-auth";
 import { options } from "@/app/api/auth/[...nextauth]/options";
+import { useSocket } from "@/context/socketContext";
+
 export async function Room({ currentRoomId }) {
   //TODO: room Users
 
-  const session = await getServerSession(options);
 
+  // const socket = useSocket();
+  const session = await getServerSession(options);
+  function leaveRoom (){
+    // socket.emit("user:leaveRoom", {
+    //   currentRoomId,
+    //   userId: session.user.id,
+    // });
+    // socket.emit("peer:leave", { currentRoomId, streamId: stream?.id });
+    console.log(session);
+
+  }
   let token;
   const joinRoom = async () => {
     if (currentRoomId === "favicon.ico") return null;
@@ -27,20 +39,28 @@ export async function Room({ currentRoomId }) {
           },
         }
       );
-
-      return response.data;
+      return (
+        <div className="grid h-[83vh] grid-cols-10 gap-4 ">
+          <SharingArea roomId={currentRoomId} user={session.user} />
+          <ChatingArea roomId={currentRoomId} user={session.user} />
+        </div>
+      );
     } catch (err) {
-      console.log("rooms", err);
-      return null;
+      const message = err.response.data.server;
+      // cant join room
+      return (
+        <div className="h-[83vh] gap-4 flex items-center justify-center flex-col">
+          <h1 className="text-center text-2xl font-bold text-red-400 mb-4">
+            {message} for now join another room then try again
+          </h1>
+          {/* TODO */}
+          {/* <button className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700">
+            Leave Room
+          </button> */}
+        </div>
+      );
     }
   };
 
-  const roomData = await joinRoom();
-
-  return (
-    <div className="grid h-[83vh] grid-cols-10 gap-4 ">
-      <SharingArea roomId={currentRoomId} user={session.user} />
-      <ChatingArea roomId={currentRoomId} user={session.user} />
-    </div>
-  );
+  return await joinRoom();
 }
