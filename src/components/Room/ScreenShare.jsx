@@ -24,7 +24,6 @@ export function SharingArea({ roomId, user }) {
 
   const [roomUsersList, setRoomUsersList] = useState([]);
 
-
   useEffect(() => {
     axios
       .get(`${process.env.SERVER_API_URL}rooms/${roomId}`, {
@@ -58,7 +57,6 @@ export function SharingArea({ roomId, user }) {
       return;
     peer.on("disconnected", () => {
       console.log("peer disconnected");
-      
     });
     peer.on("open", (id) => {
       // set my stream
@@ -162,7 +160,7 @@ export function SharingArea({ roomId, user }) {
 
   const leaveRoom = async () => {
     // close mediaDevices
-    stream.getTracks().forEach((track) => track.stop());
+    stream?.getTracks().forEach((track) => track.stop());
     // close peer connection
     if (peer) {
       peer.disconnect();
@@ -173,18 +171,10 @@ export function SharingArea({ roomId, user }) {
       roomId,
       userId: user.id,
     });
-    socket.emit("peer:leave", { roomId, streamId: stream.id });
+    socket.emit("peer:leave", { roomId, streamId: stream?.id });
     push("/");
   };
 
-  const calculateGrid = () => {
-    const endIndex = startIndex + screensPerPage;
-    return sharedScreens.slice(startIndex, endIndex).map((screen, index) => {
-      return index % 2 === 0
-        ? `${index / 2 + 1} / 2`
-        : `${(index - 1) / 2 + 1} / 2`;
-    });
-  };
   const handleScreenClick = (screen) => {
     setFocusedScreen(screen);
   };
